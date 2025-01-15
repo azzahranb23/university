@@ -28,6 +28,7 @@ class ProfileController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
                 'phone' => 'required|string',
+                'gender' => 'nullable|in:male,female',
                 'photo' => 'nullable|image|max:2048'
             ]);
 

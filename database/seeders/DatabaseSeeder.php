@@ -26,10 +26,15 @@ class DatabaseSeeder extends Seeder
         // Create Demo Users
         $this->seedDemoUsers($department, $major);
 
+        $this->call([
+            LectureSeeder::class
+        ]);
+
         // Run Project Seeder after users are created
         $this->call([
             ProjectSeeder::class,
         ]);
+
     }
 
     private function seedDemoUsers($department, $major): void

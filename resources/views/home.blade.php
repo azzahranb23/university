@@ -9,16 +9,20 @@
                         Platform Proyek Lintas Disiplin Ilmu
                     </h1>
                     <p class="text-xl text-gray-600 leading-relaxed">
-                        Kami dengan bangga mempersembahkan sistem yang inovatif dan kolaboratif untuk mahasiswa dan dosen
-                        dari berbagai bidang studi. Di sini, kami percaya bahwa sukses terletak dalam kolaborasi lintas disiplin ilmu.
+                        Kami dengan bangga mempersembahkan sistem yang inovatif dan kolaboratif untuk mahasiswa dan
+                        dosen
+                        dari berbagai bidang studi. Di sini, kami percaya bahwa sukses terletak dalam kolaborasi lintas
+                        disiplin ilmu.
                     </p>
                     <div class="flex gap-4">
                         @auth
                             <a href="{{ route('projects.initiate') }}"
                                 class="px-8 py-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all transform hover:scale-105 shadow-lg inline-flex items-center group font-semibold">
                                 Buat Proyek Baru
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
                                 </svg>
                             </a>
                             <a href="{{ route('projects.public') }}"
@@ -42,9 +46,9 @@
                         class="w-full h-full object-contain mix-blend-multiply" style="filter: contrast(1.1) brightness(1.05);"> -->
                     <!-- UPN Logo -->
                     <!-- <div class="absolute -top-2 -left-2 w-24 h-24 flex items-center justify-center z-10"> -->
-                        <img src="{{ asset('images/logoupn.png') }}" alt="Logo UPN"
-                            class="w-full h-full object-contain drop-shadow-lg transform hover:scale-105 transition-transform duration-300"
-                            style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+                    <img src="{{ asset('images/logoupn.png') }}" alt="Logo UPN"
+                        class="w-full h-full object-contain drop-shadow-lg transform hover:scale-105 transition-transform duration-300"
+                        style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
                     <!-- </div> -->
                     <!-- Subtle shadow underneath -->
                     <div
@@ -93,8 +97,10 @@
                         class="bg-white rounded-2xl shadow-[0_0_15px_rgba(20,184,166,0.1)] overflow-hidden transform hover:scale-105 transition-all group">
                         <div class="relative">
                             <img src="{{ $category->image ? asset($category->image) : asset('images/default-category.jpg') }}"
-                                alt="{{ $category->category_name }}" class="w-full h-48 object-cover group-hover:opacity-90 transition-opacity">
-                            <div class="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                alt="{{ $category->category_name }}"
+                                class="w-full h-48 object-cover group-hover:opacity-90 transition-opacity">
+                            <div class="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-black/60 to-transparent">
+                            </div>
                             <div class="absolute bottom-4 left-4 text-white">
                                 <h3 class="font-bold text-xl mb-1">{{ $category->category_name }}</h3>
                                 <p class="text-teal-200">{{ $category->projects_count }} proyek</p>
@@ -134,11 +140,13 @@
             @auth
                 <div class="flex justify-center gap-4">
                     @if (auth()->user()->role === 'student')
-                        <a href="#" class="px-8 py-4 bg-white text-teal-700 rounded-xl hover:bg-teal-50 transition-all font-semibold">
+                        <a href="#"
+                            class="px-8 py-4 bg-white text-teal-700 rounded-xl hover:bg-teal-50 transition-all font-semibold">
                             Jelajahi Proyek
                         </a>
                     @else
-                        <a href="#" class="px-8 py-4 bg-white text-teal-700 rounded-xl hover:bg-teal-50 transition-all font-semibold">
+                        <a href="#"
+                            class="px-8 py-4 bg-white text-teal-700 rounded-xl hover:bg-teal-50 transition-all font-semibold">
                             Buat Proyek Baru
                         </a>
                     @endif
