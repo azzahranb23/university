@@ -57,9 +57,9 @@ class LectureSeeder extends Seeder
                         ]
                     );
                 }
-                Log::info('API Response Data:', $response->json());
+                // Log::info('API Response Data:', $response->json());
 
-                Log::info("Seeder sukses untuk id_program_studi: {$params['id_program_studi']}");
+                // Log::info("Seeder sukses untuk id_program_studi: {$params['id_program_studi']}");
             } catch (\Exception $e) {
                 Log::error("Error saat seeding data dosen untuk id_program_studi: {$params['id_program_studi']} - {$e->getMessage()}");
             }

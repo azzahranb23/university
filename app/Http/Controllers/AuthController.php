@@ -19,6 +19,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // ini adalah codingan awal
     // public function login(Request $request)
     // {
     //     try {
@@ -74,19 +75,15 @@ class AuthController extends Controller
                     'password' => $password,
                 ]);
     
-            Log::info('Request sent to API with body:', [
-                'username' => $username,
-                'password' => $password,
-            ]);
     
             // Log response untuk debugging
-            Log::info('API Response:', $response->json());
+            // Log::info('API Response:', $response->json());
     
             // Kembalikan respons dalam bentuk JSON
             return $response->json();
         } catch (\Exception $e) {
             // Tangani kesalahan API dan log pesan error
-            Log::error('API Login Error: ' . $e->getMessage());
+            // Log::error('API Login Error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Gagal menghubungi API. Silakan coba lagi.'];
         }
     }
@@ -108,6 +105,9 @@ class AuthController extends Controller
             // Cek login lokal
             if (Auth::attempt(['nim_nip' => $credentials['nim_nip'], 'password' => $credentials['password']])) {
                 $request->session()->regenerate();
+                if (Auth::user()->role === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
                 return redirect()->intended('/')->with('success', 'Login berhasil!');
             }
     
@@ -115,7 +115,7 @@ class AuthController extends Controller
             $apiResponse = $this->loginViaApi($credentials['nim_nip'], $credentials['password']);
     
             // Debugging API Response
-            Log::info('API Response:', $apiResponse);
+            // Log::info('API Response:', $apiResponse);
     
             // Pastikan API berhasil
             if (isset($apiResponse['success']) && $apiResponse['success']) {
@@ -188,7 +188,7 @@ class AuthController extends Controller
                 ])
                 ->with('error', 'Gagal masuk.');
         } catch (\Exception $e) {
-            Log::error('Login Error: ' . $e->getMessage());
+            // Log::error('Login Error: ' . $e->getMessage());
             return back()
                 ->withInput()
                 ->withErrors(['system_error' => 'Terjadi kesalahan sistem. Silakan coba lagi.'])
