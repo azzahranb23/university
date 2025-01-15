@@ -15,7 +15,7 @@ class MajorSeeder extends Seeder
 
         $majors = [
             [
-                'major_name' => 'S1 Sistem Informasi',
+                'major_name' => 'D3 Sistem Informasi',
                 'department_id' => $siDept->department_id
             ],
             [
@@ -27,7 +27,7 @@ class MajorSeeder extends Seeder
                 'department_id' => $tiDept->department_id
             ],
             [
-                'major_name' => 'D3 Sistem Informasi',
+                'major_name' => 'S1 Sistem Informasi',
                 'department_id' => $siDept->department_id
             ],
         ];
