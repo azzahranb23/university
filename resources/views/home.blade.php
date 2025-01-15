@@ -38,14 +38,14 @@
                     </div>
                 </div>
                 <div class="relative lg:w-[600px] lg:h-[400px] mx-auto">
-                    <img src="{{ asset('images/logo.jpg') }}" alt="Virtual Meeting Illustration"
-                        class="w-full h-full object-contain mix-blend-multiply" style="filter: contrast(1.1) brightness(1.05);">
+                    <!-- <img src="{{ asset('images/logo.jpg') }}" alt="Virtual Meeting Illustration"
+                        class="w-full h-full object-contain mix-blend-multiply" style="filter: contrast(1.1) brightness(1.05);"> -->
                     <!-- UPN Logo -->
-                    <div class="absolute -top-2 -left-2 w-24 h-24 flex items-center justify-center z-10">
+                    <!-- <div class="absolute -top-2 -left-2 w-24 h-24 flex items-center justify-center z-10"> -->
                         <img src="{{ asset('images/logoupn.png') }}" alt="Logo UPN"
                             class="w-full h-full object-contain drop-shadow-lg transform hover:scale-105 transition-transform duration-300"
                             style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
-                    </div>
+                    <!-- </div> -->
                     <!-- Subtle shadow underneath -->
                     <div
                         class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-4 bg-gradient-to-r from-transparent via-teal-200/20 to-transparent blur-xl">

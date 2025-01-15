@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-<<<<<<< HEAD
-use Illuminate\Support\Facades\Http;
-=======
-use Illuminate\Support\Facades\Https;
->>>>>>> 08cafa57323ea963fd74fcee71fac6f8df651888
 
 class AuthController extends Controller
 {
@@ -21,40 +16,6 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-
-    // public function login(Request $request)
-    // {
-    //     try {
-    //         $credentials = $request->validate([
-    //             'nim_nip' => 'required',
-    //             'password' => 'required'
-    //         ]);
-
-    //         if (Auth::attempt(['nim_nip' => $credentials['nim_nip'], 'password' => $credentials['password']])) {
-    //             $request->session()->regenerate();
-
-    //             // Redirect berdasarkan role
-    //             if (Auth::user()->role === 'admin') {
-    //                 return redirect()->route('admin.dashboard');
-    //             }
-
-    //             return redirect()->intended('/')->with('success', 'Login berhasil!');
-    //         }
-
-    //         return back()
-    //             ->withInput()
-    //             ->withErrors([
-    //                 'login_error' => 'NIM/NIP atau Password salah.',
-    //                 'nim_nip' => 'NIM/NIP tidak ditemukan.'
-    //             ])
-    //             ->with('error', 'Gagal masuk. Silakan periksa kembali NIM/NIP dan Password Anda.');
-    //     } catch (\Exception $e) {
-    //         return back()
-    //             ->withInput()
-    //             ->withErrors(['system_error' => 'Terjadi kesalahan sistem. Silakan coba lagi.'])
-    //             ->with('error', 'Terjadi kesalahan. Silakan coba beberapa saat lagi.');
-    //     }
-    // }
 
     public function login(Request $request)
     {
@@ -64,61 +25,13 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $apiUrl = 'https://api.upnvj.ac.id/data/auth_mahasiswa';
-
             if (Auth::attempt(['nim_nip' => $credentials['nim_nip'], 'password' => $credentials['password']])) {
                 $request->session()->regenerate();
 
+                // Redirect berdasarkan role
                 if (Auth::user()->role === 'admin') {
                     return redirect()->route('admin.dashboard');
                 }
-
-                return redirect()->intended('/')->with('success', 'Login berhasil!');
-            }
-
-            $response = Http::withBasicAuth('uakademik', 'VTUzcjRrNGRlbTFrMjAyNCYh')
-                ->withHeaders([
-                    'API_KEY_NAME' => 'X-UPNVJ-API-KEY',
-                    'API_KEY_SECRET' => 'Cspwwxq5SyTOMkq8XYcwZ1PMpYrYCwrv'
-                ])
-                ->post($apiUrl, [
-                    'username' => $credentials['nim_nip'],
-                    'password' => $credentials['password']
-                ]);
-
-            if ($response->successful()) {
-                $apiData = $response->json();
-
-                $user = User::where('nim_nip', $credentials['nim_nip'])->first();
-
-                if (!$user) {
-                    $user = User::create([
-                        'user_id' => $apiData['user_id'],
-                        'name' => $apiData['name'],
-                        'email' => $apiData['email'],
-                        'password' => bcrypt($credentials['password']),
-                        'role' => $apiData['role'],
-                        'photo' => $apiData['photo'],
-                        'nim_nip' => $apiData['nim_nip'],
-                        'year' => $apiData['year'],
-                        'major_id' => $apiData['major_id'],
-                        'departemen_id' => $apiData['departemen_id'],
-                    ]);
-                } else {
-                    $user->update([
-                        'name' => $apiData['name'],
-                        'email' => $apiData['email'],
-                        'role' => $apiData['role'],
-                        'photo' => $apiData['photo'],
-                        'year' => $apiData['year'],
-                        'major_id' => $apiData['major_id'],
-                        'departemen_id' => $apiData['departemen_id'],
-                    ]);
-                }
-
-                Auth::login($user);
-
-                $request->session()->regenerate();
 
                 return redirect()->intended('/')->with('success', 'Login berhasil!');
             }
@@ -127,8 +40,7 @@ class AuthController extends Controller
                 ->withInput()
                 ->withErrors([
                     'login_error' => 'NIM/NIP atau Password salah.',
-
-
+                    'nim_nip' => 'NIM/NIP tidak ditemukan.'
                 ])
                 ->with('error', 'Gagal masuk. Silakan periksa kembali NIM/NIP dan Password Anda.');
         } catch (\Exception $e) {
