@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
-
 class AuthController extends Controller
 {
     public function showLoginForm()
@@ -56,20 +55,16 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            // URL endpoint API untuk autentikasi mahasiswa
-            $apiUrl = 'https://api.upnvj.ac.id/data/auth_mahasiswa';
-
-            // Validasi input request
             $credentials = $request->validate([
-                'username' => 'required',
+                'nim_nip' => 'required',
                 'password' => 'required'
             ]);
 
-            // Coba autentikasi melalui database lokal terlebih dahulu
+            $apiUrl = 'https://api.upnvj.ac.id/data/auth_mahasiswa';
+
             if (Auth::attempt(['nim_nip' => $credentials['nim_nip'], 'password' => $credentials['password']])) {
                 $request->session()->regenerate();
 
-                // Redirect berdasarkan role dari database lokal
                 if (Auth::user()->role === 'admin') {
                     return redirect()->route('admin.dashboard');
                 }
@@ -77,7 +72,6 @@ class AuthController extends Controller
                 return redirect()->intended('/')->with('success', 'Login berhasil!');
             }
 
-            // Jika autentikasi melalui database gagal, coba autentikasi melalui API eksternal
             $response = Http::withBasicAuth('uakademik', 'VTUzcjRrNGRlbTFrMjAyNCYh')
                 ->withHeaders([
                     'API_KEY_NAME' => 'X-UPNVJ-API-KEY',
@@ -88,46 +82,52 @@ class AuthController extends Controller
                     'password' => $credentials['password']
                 ]);
 
-            if ($response->successful() && $response->json('success')) {
-                $apiUser = $response->json('data');
+            if ($response->successful()) {
+                $apiData = $response->json();
 
-                // Simpan atau perbarui data user dari API ke dalam database lokal
-                $user = User::updateOrCreate(
-                    ['nim_nip' => $apiUser['nim']],
-                    [
-                        'name' => $apiUser['nama'],
-                        'email' => $apiUser['email'],
-                        'password' => bcrypt($credentials['password']), // Menyimpan password terenkripsi
-                        'role' => 'user', // Default role, sesuaikan jika ada informasi role
-                        'photo' => null, // Default photo
-                        'year' => $apiUser['angkatan'],
-                        'major_id' => $apiUser['id_program_studi'],
-                        'departemen_id' => $apiUser['kode_fakultas'],
-                    ]
-                );
+                $user = User::where('nim_nip', $credentials['nim_nip'])->first();
 
-                // Login menggunakan data user yang disimpan
-                Auth::login($user);
-                $request->session()->regenerate();
-
-                // Redirect berdasarkan role (jika diperlukan)
-                if ($user->role === 'admin') {
-
-
-                    return redirect()->route('admin.dashboard');
+                if (!$user) {
+                    $user = User::create([
+                        'user_id' => $apiData['user_id'],
+                        'name' => $apiData['name'],
+                        'email' => $apiData['email'],
+                        'password' => bcrypt($credentials['password']),
+                        'role' => $apiData['role'],
+                        'photo' => $apiData['photo'],
+                        'nim_nip' => $apiData['nim_nip'],
+                        'year' => $apiData['year'],
+                        'major_id' => $apiData['major_id'],
+                        'departemen_id' => $apiData['departemen_id'],
+                    ]);
+                } else {
+                    $user->update([
+                        'name' => $apiData['name'],
+                        'email' => $apiData['email'],
+                        'role' => $apiData['role'],
+                        'photo' => $apiData['photo'],
+                        'year' => $apiData['year'],
+                        'major_id' => $apiData['major_id'],
+                        'departemen_id' => $apiData['departemen_id'],
+                    ]);
                 }
+
+                Auth::login($user);
+
+                $request->session()->regenerate();
 
                 return redirect()->intended('/')->with('success', 'Login berhasil!');
             }
 
-            // Jika kedua metode autentikasi gagal
             return back()
                 ->withInput()
                 ->withErrors([
-                    'login_error' => 'NIM/NIP atau Password salah. Silakan coba lagi.'
-                ]);
+                    'login_error' => 'NIM/NIP atau Password salah.',
+
+
+                ])
+                ->with('error', 'Gagal masuk. Silakan periksa kembali NIM/NIP dan Password Anda.');
         } catch (\Exception $e) {
-            // Penanganan kesalahan sistem
             return back()
                 ->withInput()
                 ->withErrors(['system_error' => 'Terjadi kesalahan sistem. Silakan coba lagi.'])
