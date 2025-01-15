@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Http;
+=======
+use Illuminate\Support\Facades\Https;
+>>>>>>> 08cafa57323ea963fd74fcee71fac6f8df651888
 
 class AuthController extends Controller
 {
