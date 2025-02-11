@@ -15,6 +15,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('due_date');
             $table->string('link_task')->nullable();
+            $table->string('document_path')->nullable();
             $table->foreignId('project_id')->constrained('projects', 'project_id')->onDelete('cascade');
             $table->foreignId('application_id')->constrained('applications', 'application_id')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users', 'user_id')->onDelete('cascade');

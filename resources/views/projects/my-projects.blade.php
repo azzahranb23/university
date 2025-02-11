@@ -55,13 +55,13 @@
                                             {{ $application->project->user->role === 'lecturer' ? 'Dosen' : 'Mahasiswa' }}
                                         </span>
                                     </div>
-
                                     <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-                                        @if ($application->progress !== null && $application->progress < 100)
+                                        <p>Progress: {{ $application->progress }} %</p>
+                                        {{-- @if ($application->progress !== null && $application->progress < 100)
                                             <p>Progress: {{ $application->progress }}%/100%</p>
                                         @elseif ($application->progress == 100)
                                             <p>Progress: Selesai</p>
-                                        @endif
+                                        @endif --}}
                                         @if ($application->finish_date)
                                             <div class="flex items-center gap-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-500" fill="none"
@@ -83,9 +83,10 @@
                             <div>
                                 @if ($application->status === 'pending')
                                     <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Request</span>
-                                @elseif($application->status === 'accepted' && $application->progress < 100)
+                                    {{-- @elseif($application->status === 'accepted' && $application->progress < 100) --}}
+                                @elseif($application->status === 'accepted' && $application->project->status != 'completed')
                                     <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full">On Going</span>
-                                @elseif($application->status === 'accepted' && $application->progress == 100)
+                                @elseif($application->status === 'accepted' && $application->project->status === 'completed')
                                     <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Selesai</span>
                                 @elseif($application->status === 'rejected')
                                     <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full">Ditolak</span>
@@ -99,12 +100,12 @@
                         <!-- Action Buttons -->
                         @if ($application->status === 'accepted')
                             <div class="mt-4 flex justify-end space-x-4">
-                                @if ($application->progress < 100)
+                                {{-- @if ($application->progress < 100)
                                     <button onclick="finishProject({{ $application->application_id }})"
                                         class="px-4 py-2 border border-teal-500 text-teal-500 rounded-lg hover:bg-teal-50">
                                         Proyek Selesai
                                     </button>
-                                @endif
+                                @endif --}}
                                 @if ($application->link_room_discus)
                                     <a href="{{ route('applications.show', $application->application_id) }}"
                                         class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">

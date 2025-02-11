@@ -295,7 +295,7 @@
         <!-- Project Contents Overview -->
         <div class="bg-gray-800 rounded-lg p-6">
             <div class="flex items-center justify-between mb-4">
-                <h4 class="text-sm font-medium text-gray-400">Status Konten</h4>
+                <h4 class="text-sm font-medium text-gray-400">Status Penugasan</h4>
             </div>
             <div class="space-y-2">
                 <div class="flex justify-between items-center">

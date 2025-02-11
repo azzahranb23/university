@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\table;
+
 return new class extends Migration
 {
     public function up()
@@ -16,6 +18,8 @@ return new class extends Migration
             $table->json('positions');
             $table->string('duration');
             $table->text('benefits');
+            $table->integer('quota')->default(0);
+            $table->integer('applicants')->default(0);
             $table->foreignId('category_id')->constrained('categories', 'category_id')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
             $table->enum('status', ['draft', 'active', 'completed', 'cancelled'])->default('active');

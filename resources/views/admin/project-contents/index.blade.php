@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Konten Proyek')
+@section('title', 'Manajemen Penugasan Proyek')
 
 @section('content')
     <!-- Header Banner -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="text-white text-2xl font-bold">Manajemen Konten Proyek</h2>
-                <p class="text-white/80 mt-1">Monitor progress dan konten dari setiap proyek</p>
+                <h2 class="text-white text-2xl font-bold">Manajemen Penugasan Proyek</h2>
+                <p class="text-white/80 mt-1">Monitor progress dan penugasan dari setiap proyek</p>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="text-gray-400 text-sm">Total Konten</p>
+                    <p class="text-gray-400 text-sm">Total Penugasan</p>
                     <h3 class="text-2xl font-semibold text-white">{{ $stats['totalContents'] }}</h3>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                         <div class="ml-3">
                             <h3 class="text-white font-medium">{{ $projectContents->first()->project->title }}</h3>
                             <div class="flex items-center text-sm space-x-2">
-                                <span class="text-gray-400">{{ $projectContents->count() }} Konten</span>
+                                <span class="text-gray-400">{{ $projectContents->count() }} Penugasan</span>
                                 <span class="text-gray-600">•</span>
                                 <span class="text-gray-400">{{ $projectContents->whereNotNull('link_task')->count() }} Link Tersedia</span>
                             </div>
@@ -134,15 +134,15 @@
                                         </span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <!-- Link Status -->
-                                        @if ($content->link_task)
-                                            <a href="{{ $content->link_task }}" target="_blank"
+                                        <!-- Document Status -->
+                                        @if ($content->document_path)
+                                            <a href="{{ asset($content->document_path) }}" target="_blank"
                                                 class="inline-flex items-center text-blue-400 hover:text-blue-300 text-xs">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
-                                                Link Tugas
+                                                Unduh Dokumen
                                             </a>
                                         @else
                                             <span class="text-yellow-400 text-xs">
@@ -150,7 +150,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                Belum ada link
+                                                Belum ada dokumen
                                             </span>
                                         @endif
 
@@ -183,7 +183,7 @@
             <div class="inline-block w-full max-w-3xl bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all">
                 <!-- Header -->
                 <div class="flex justify-between items-center px-6 py-4 border-b border-gray-700">
-                    <h3 class="text-lg font-medium text-white">Detail Konten Proyek</h3>
+                    <h3 class="text-lg font-medium text-white">Detail Penugasan</h3>
                     <button type="button" class="text-gray-400 hover:text-gray-200 btn-close-modal">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -215,8 +215,10 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-400">Link Tugas</label>
-                                <a id="detailLinkTask" href="#" target="_blank" class="mt-1 text-blue-400 hover:text-blue-300"></a>
+                                <label class="block text-sm font-medium text-gray-400">Dokumen</label>
+                                <div id="detailDocumentContainer">
+                                    <!-- Area ini akan diisi oleh JavaScript -->
+                                </div>
                             </div>
                         </div>
 
@@ -264,6 +266,23 @@
     <!-- Script -->
     <script>
         $(document).ready(function() {
+            // Set document
+            const detailDocumentContainer = $('#detailDocumentContainer');
+            if (content.document_path) {
+                detailDocumentContainer.html(`
+        <a href="${content.document_path}" target="_blank" class="mt-1 inline-flex items-center text-blue-400 hover:text-blue-300">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Unduh Dokumen
+        </a>
+    `);
+            } else {
+                detailDocumentContainer.html(`
+        <p class="mt-1 text-yellow-400">Belum ada dokumen</p>
+    `);
+            }
             // Detail Button Click
             $('.btn-detail').click(function() {
                 const content = $(this).data('content');

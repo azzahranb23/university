@@ -7,8 +7,7 @@
                     <h2 class="text-2xl font-bold text-white">Update Profile</h2>
                 </div>
 
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data"
-                    class="p-8 space-y-6">
+                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
                     @csrf
                     @method('PUT')
 
@@ -17,19 +16,29 @@
                         <div class="relative group">
                             <img id="profile-photo"
                                 src="{{ auth()->user()->photo ? asset('storage/' . auth()->user()->photo) : asset('images/default-avatar.jpg') }}"
-                                alt="Profile"
-                                class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
-                            <label for="photo-input"
-                                class="absolute bottom-0 right-0 bg-teal-500 text-white p-2 rounded-full cursor-pointer hover:bg-teal-600 transition-colors shadow-lg">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </label>
-                            <input type="file" id="photo-input" name="photo" class="hidden" accept="image/*"
-                                onchange="previewPhoto(event)">
+                                alt="Profile" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                            <div class="absolute bottom-0 right-0 flex space-x-2">
+                                <!-- Upload Button -->
+                                <label for="photo-input"
+                                    class="bg-teal-500 text-white p-2 rounded-full cursor-pointer hover:bg-teal-600 transition-colors shadow-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </label>
+                                <!-- Delete Button - Only show if user has photo -->
+                                @if (auth()->user()->photo)
+                                    <a href="{{ route('profile.delete-photo') }}"
+                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg inline-flex">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </a>
+                                @endif
+                            </div>
+                            <input type="file" id="photo-input" name="photo" class="hidden" accept="image/*" onchange="previewPhoto(event)">
                         </div>
                     </div>
 
@@ -43,10 +52,8 @@
                                     class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed">
                             </div>
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Nama
-                                    Lengkap</label>
-                                <input type="text" name="name" id="name" value="{{ auth()->user()->name }}"
-                                    required
+                                <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                                <input type="text" name="name" id="name" value="{{ auth()->user()->name }}" required
                                     class="mt-1 block w-full px-4 py-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-teal-200 focus:border-teal-500">
                             </div>
                         </div>
@@ -55,15 +62,13 @@
                             @if (auth()->user()->role === 'student')
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Program Studi</label>
-                                    <input type="text" value="{{ auth()->user()->major->major_name ?? '-' }}"
-                                        readonly
+                                    <input type="text" value="{{ auth()->user()->major->major_name ?? '-' }}" readonly
                                         class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed">
                                 </div>
                             @else
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Departemen</label>
-                                    <input type="text"
-                                        value="{{ auth()->user()->department->department_name ?? '-' }}" readonly
+                                    <input type="text" value="{{ auth()->user()->department->department_name ?? '-' }}" readonly
                                         class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed">
                                 </div>
                             @endif
@@ -81,12 +86,9 @@
                                 </select>
                             </div>
 
-
                             <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700">No.
-                                    Telepon</label>
-                                <input type="tel" name="phone" id="phone" value="{{ auth()->user()->phone }}"
-                                    required
+                                <label for="phone" class="block text-sm font-medium text-gray-700">No. Telepon</label>
+                                <input type="tel" name="phone" id="phone" value="{{ auth()->user()->phone }}" required
                                     class="mt-1 block w-full px-4 py-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-teal-200 focus:border-teal-500">
                                 @error('phone')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -94,10 +96,8 @@
                             </div>
 
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Alamat
-                                    Email</label>
-                                <input type="email" name="email" id="email" value="{{ auth()->user()->email }}"
-                                    required
+                                <label for="email" class="block text-sm font-medium text-gray-700">Alamat Email</label>
+                                <input type="email" name="email" id="email" value="{{ auth()->user()->email }}" required
                                     class="mt-1 block w-full px-4 py-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-teal-200 focus:border-teal-500">
                                 @error('email')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

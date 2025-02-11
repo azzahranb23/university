@@ -6,7 +6,6 @@
                 <form action="{{ route('projects.public') }}" method="GET" class="flex gap-4">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari proyek..."
                         class="flex-1 rounded-xl border-gray-300 focus:border-teal-500 focus:ring-teal-500 px-6 py-3 bg-white">
-
                     <div class="relative w-64">
                         <!-- Ikon Kategori -->
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -73,8 +72,6 @@
                         @endforelse
                     </div>
                 </div>
-
-
                 <!-- Main Project Content -->
                 @if ($selectedProject)
                     <div class="col-span-8">
@@ -110,10 +107,16 @@
                                         </div>
                                         <div class="space-x-4">
                                             @if ($selectedProject->user_id != Auth::id())
-                                                <button @click="showApplyModal = true"
-                                                    class="px-6 py-2.5 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
-                                                    Daftar Sekarang
-                                                </button>
+                                                @if ($selectedProject->applicants >= $selectedProject->quota)
+                                                    <button disabled class="px-6 py-2.5 bg-gray-400 text-white rounded-lg cursor-not-allowed">
+                                                        Kuota Penuh ({{ $selectedProject->applicants }}/{{ $selectedProject->quota }})
+                                                    </button>
+                                                @else
+                                                    <button @click="showApplyModal = true"
+                                                        class="px-6 py-2.5 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                                        Daftar Sekarang ({{ $selectedProject->applicants }}/{{ $selectedProject->quota }})
+                                                    </button>
+                                                @endif
                                             @endif
                                             <button id="shareButton"
                                                 class="px-6 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -173,9 +176,39 @@
                                 </div>
                             </div>
                         </div>
+                    @elseif ($projects->isEmpty())
+                        <div class="col-span-8">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                                <div class="text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Pencarian tidak ditemukan</h3>
+                                    <p class="text-gray-500 mb-6">Tidak ada proyek yang sesuai dengan kriteria pencarian Anda</p>
+                                    <a href="{{ route('projects.public') }}"
+                                        class="inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                        </svg>
+                                        Kembali ke Semua Proyek
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     @else
-                        <div class="col-span-4 flex justify-center items-center bg-white rounded-xl p-8">
-                            <p class="text-gray-500">Pilih proyek untuk melihat detail</p>
+                        <div class="col-span-8">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                                <div class="text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Pilih Project</h3>
+                                    <p class="text-gray-500">Pilih project yang ingin di lihat detailnya</p>
+                                </div>
+                            </div>
                         </div>
                 @endif
             </div>

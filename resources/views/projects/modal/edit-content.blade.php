@@ -9,7 +9,7 @@
             <!-- Modal Header with Gradient -->
             <div class="bg-gradient-to-r from-teal-600 to-teal-700 px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-2xl font-bold text-white">Edit Konten Proyek</h3>
+                    <h3 class="text-2xl font-bold text-white">Edit Penugasan</h3>
                     <button type="button" onclick="closeEditModal()" class="text-white hover:text-teal-100 transition-colors">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -24,7 +24,7 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label for="edit_title" class="block text-sm font-medium text-gray-700 mb-1">Judul Konten</label>
+                        <label for="edit_title" class="block text-sm font-medium text-gray-700 mb-1">Judul Penugasan</label>
                         <input type="text" name="title" id="edit_title" required
                             class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
                     </div>
@@ -50,9 +50,14 @@
                     </div>
 
                     <div>
-                        <label for="edit_link_task" class="block text-sm font-medium text-gray-700 mb-1">Link Tautan Penugasan</label>
-                        <input type="url" name="link_task" id="edit_link_task"
-                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" readonly>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">File Penugasan</label>
+                        <div class="mt-1">
+                            <div id="documentPreview">
+                                <div class="p-4 text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg">
+                                    Belum ada dokumen yang diupload
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="mt-6 flex justify-end gap-3">
@@ -82,11 +87,12 @@
 
     // Fungsi untuk edit konten
     async function editContent(contentId) {
+        const baseUrl = '{{ asset('') }}';
         if (!contentId) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'ID konten tidak valid'
+                text: 'ID penugasan tidak valid'
             });
             return;
         }
@@ -104,7 +110,41 @@
                 document.getElementById('edit_description').value = content.description;
                 document.getElementById('edit_start_date').value = content.start_date;
                 document.getElementById('edit_due_date').value = content.due_date;
-                document.getElementById('edit_link_task').value = content.link_task || '';
+
+                // Update document preview
+                const documentPreview = document.getElementById('documentPreview');
+                if (content.document_path) {
+                    documentPreview.innerHTML = `
+                    <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-teal-50 rounded-lg">
+                                <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Dokumen Tersimpan</p>
+                                <p class="text-xs text-gray-500">${content.document_path.split('/').pop()}</p>
+                            </div>
+                        </div>
+                        <a href="${baseUrl}${content.document_path}" target="_blank"
+                            class="inline-flex items-center px-3 py-1.5 text-sm text-teal-600 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Unduh
+                        </a>
+                    </div>
+                `;
+                } else {
+                    documentPreview.innerHTML = `
+                    <div class="p-4 text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg">
+                        Belum ada dokumen yang diupload
+                    </div>
+                `;
+                }
 
                 // Buka modal
                 showEditModal();
@@ -112,7 +152,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Gagal mengambil data konten'
+                    text: 'Gagal mengambil data penugasan'
                 });
             }
         } catch (error) {
@@ -155,7 +195,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: 'Konten proyek berhasil diperbarui',
+                            text: 'Penugasan berhasil diperbarui',
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
@@ -165,7 +205,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: result.message || 'Terjadi kesalahan saat memperbarui konten'
+                            text: result.message || 'Terjadi kesalahan saat memperbarui penugasan'
                         });
                     }
                 } catch (error) {
@@ -173,7 +213,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Terjadi kesalahan saat memperbarui konten'
+                        text: 'Terjadi kesalahan saat memperbarui penugasan'
                     });
                 }
             });

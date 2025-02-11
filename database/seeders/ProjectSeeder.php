@@ -23,6 +23,7 @@ class ProjectSeeder extends Seeder
                 'duration' => '5 Bulan',
                 'benefits' => "- Sertifikasi\n- Portofolio",
                 'category_id' => 1,
+                'quota' => 3,
                 'user_id' => 1,
             ],
             [
@@ -37,6 +38,7 @@ class ProjectSeeder extends Seeder
                 'duration' => '6 Bulan',
                 'benefits' => "- Sertifikasi\n- Pengalaman Industri\n- Insentif Bulanan",
                 'category_id' => 3,
+                'quota' => 2,
                 'user_id' => 1,
             ],
             [
@@ -51,6 +53,7 @@ class ProjectSeeder extends Seeder
                 'duration' => '4 Bulan',
                 'benefits' => "- Sertifikasi\n- Portfolio\n- Pengalaman Startup",
                 'category_id' => 2,
+                'quota' => 2,
                 'user_id' => 2,
             ],
         ];

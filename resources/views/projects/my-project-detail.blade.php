@@ -140,7 +140,7 @@
                 <!-- Title Section -->
                 <div class="relative px-8 py-5 bg-gray-50 border-b border-gray-200">
                     <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-10 bg-teal-500 rounded-r"></div>
-                    <h3 class="text-2xl font-semibold text-gray-800 pl-6">Konten Proyek</h3>
+                    <h3 class="text-2xl font-semibold text-gray-800 pl-6">Penugasan</h3>
                 </div>
 
                 <!-- Content Section -->
@@ -159,8 +159,8 @@
                                                     {{ $content->title }}
                                                 </h4>
                                                 <!-- Indikator Link -->
-                                                <div id="link_indicator_{{ $content->content_id }}">
-                                                    @if ($content->link_task)
+                                                <div id="link_indicator_{{ $content->document_path }}">
+                                                    @if ($content->document_path)
                                                         <span
                                                             class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-700">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,11 +207,11 @@
                             <!-- Details -->
                             <div id="details_{{ $content->content_id }}" class="hidden transition-all duration-200">
                                 <div class="p-6 space-y-4">
-                                    <!-- Link Input Section with Status -->
+                                    <!-- Upload Document Section -->
                                     <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                                        <label class="flex items-center justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-700">Link Tugas</span>
-                                            @if ($content->link_task)
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-sm font-medium text-gray-700">Dokumen Tugas</span>
+                                            @if ($content->document_path)
                                                 <span class="flex items-center text-xs text-green-600">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -220,33 +220,70 @@
                                                     Terakhir diupdate: {{ Carbon\Carbon::parse($content->updated_at)->format('d M Y H:i') }}
                                                 </span>
                                             @endif
-                                        </label>
-                                        <div class="flex items-center gap-4">
-                                            <input type="url" id="link_{{ $content->content_id }}" value="{{ $content->link_task }}"
-                                                class="flex-1 px-4 py-2 border rounded-lg border-gray-300 focus:ring-teal-500 focus:border-teal-500 {{ $content->link_task ? 'bg-white' : 'bg-gray-50' }}"
-                                                placeholder="https://...">
-                                            <button onclick="updateLink('{{ $content->content_id }}')"
-                                                class="px-6 py-2 text-white bg-teal-500 rounded-lg hover:bg-teal-600 transition duration-300 flex items-center">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                                </svg>
-                                                Simpan
-                                            </button>
                                         </div>
-                                        @if ($content->link_task)
-                                            <div class="mt-2 flex items-center text-sm text-gray-500">
-                                                <a href="{{ $content->link_task }}" target="_blank"
-                                                    class="inline-flex items-center text-teal-600 hover:text-teal-700">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                    </svg>
-                                                    Buka Link
-                                                </a>
-                                            </div>
-                                        @endif
+
+                                        <!-- File Upload Area -->
+                                        <div class="space-y-4">
+                                            @if ($content->document_path)
+                                                <!-- Preview Area jika sudah ada dokumen -->
+                                                <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="p-2 bg-teal-50 rounded-lg">
+                                                            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm font-medium text-gray-900">Dokumen Tersimpan</p>
+                                                            <p class="text-xs text-gray-500">{{ basename($content->document_path) }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center space-x-2">
+                                                        <!-- Download Button -->
+                                                        <a href="{{ asset($content->document_path) }}" target="_blank"
+                                                            class="inline-flex items-center px-3 py-1.5 text-sm text-teal-600 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors">
+                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                            </svg>
+                                                            Unduh
+                                                        </a>
+                                                        <!-- Delete Button -->
+                                                        <button onclick="deleteDocument('{{ $content->content_id }}')"
+                                                            class="inline-flex items-center px-3 py-1.5 text-sm text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <!-- Upload Form -->
+                                                <form id="uploadForm_{{ $content->content_id }}"
+                                                    class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-teal-500 transition-colors">
+                                                    <input type="file" id="document_{{ $content->content_id }}"
+                                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                        onchange="handleFileUpload('{{ $content->content_id }}')">
+                                                    <div class="space-y-2">
+                                                        <svg class="mx-auto w-12 h-12 text-gray-400" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                        </svg>
+                                                        <p class="text-sm text-gray-600">
+                                                            <span class="font-medium text-teal-600">Klik untuk upload</span> atau drag and drop
+                                                        </p>
+                                                        <p class="text-xs text-gray-500">PDF, DOC, DOCX, TXT, RAR, atau ZIP (Max. 5MB)</p>
+                                                    </div>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </div>
+
 
                                     <!-- Info Grid -->
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm text-gray-700">
@@ -314,7 +351,7 @@
                         </div>
                     @empty
                         <div class="text-center py-12">
-                            <p class="text-gray-500">Belum ada konten proyek</p>
+                            <p class="text-gray-500">Belum ada penugasan</p>
                         </div>
                     @endforelse
                 </div>
@@ -430,6 +467,158 @@
                 icon.classList.remove('rotate-180');
                 buttonText.textContent = 'Detail';
             }
+        }
+    </script>
+
+    <script>
+        function handleFileUpload(contentId) {
+            const fileInput = document.getElementById(`document_${contentId}`);
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            // Validasi tipe file - menambahkan RAR dan ZIP
+            const allowedTypes = [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain',
+                'application/x-rar-compressed', // untuk RAR
+                'application/rar', // untuk RAR
+                'application/x-zip-compressed', // untuk ZIP
+                'application/zip' // untuk ZIP
+            ];
+
+            // Validasi extensi file sebagai backup
+            const allowedExtensions = ['pdf', 'doc', 'docx', 'txt', 'rar', 'zip'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Format File Tidak Didukung',
+                    text: 'Harap upload file dalam format PDF, DOC, DOCX, TXT, RAR, atau ZIP'
+                });
+                return;
+            }
+
+            // Validasi ukuran file (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Terlalu Besar',
+                    text: 'Ukuran file maksimal adalah 5MB'
+                });
+                return;
+            }
+
+            // Buat FormData
+            const formData = new FormData();
+            formData.append('document', file);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+            // Loading state
+            Swal.fire({
+                title: 'Mengupload...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Upload file
+            fetch(`/project-contents/${contentId}/upload-document`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(async response => {
+                    if (!response.ok) {
+                        // Coba untuk mendapatkan pesan error dari response
+                        let errorMessage;
+                        try {
+                            const errorData = await response.json();
+                            errorMessage = errorData.message;
+                        } catch {
+                            errorMessage = `HTTP error! status: ${response.status}`;
+                        }
+                        throw new Error(errorMessage);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Dokumen berhasil diupload',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: error.message || 'Terjadi kesalahan saat mengupload dokumen. Silakan coba lagi.'
+                    });
+                });
+        }
+
+        function deleteDocument(contentId) {
+            Swal.fire({
+                title: 'Hapus Dokumen?',
+                text: "Dokumen yang dihapus tidak dapat dikembalikan",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/project-contents/${contentId}/delete-document`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            }
+                        })
+                        .then(async response => {
+                            if (!response.ok) {
+                                let errorMessage;
+                                try {
+                                    const errorData = await response.json();
+                                    errorMessage = errorData.message;
+                                } catch {
+                                    errorMessage = `HTTP error! status: ${response.status}`;
+                                }
+                                throw new Error(errorMessage);
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Dokumen berhasil dihapus',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: error.message || 'Terjadi kesalahan saat menghapus dokumen. Silakan coba lagi.'
+                            });
+                        });
+                }
+            });
         }
     </script>
 </x-app-layout>

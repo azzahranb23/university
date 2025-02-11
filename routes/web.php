@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/password', [ProfileController::class, 'password'])->name('profile.password');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::get('/profile/delete-photo', [ProfileController::class, 'deletePhoto'])->name('profile.delete-photo');
 
     // Lihat semua proyek
     Route::get('/projects', [ProjectController::class, 'publicIndex'])->name('projects.public');
@@ -48,17 +49,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Application/finished', [ApplicationController::class, 'finished'])->name('application.finished');
     // Lihay Proyek Saya (Fillter ditolak) - Proyek yang sudah ditolak
     Route::get('/Application/rejected', [ApplicationController::class, 'rejected'])->name('application.rejected');
-
     // Proyek Selesai
     Route::post('/applications/{application}/finish', [ApplicationController::class, 'finish'])->name('applications.finish');
-
     // Lihat Detail Proyek yang Saya daftar
     Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
-
     // Terima Proyek
     Route::post('/applications/{id}/accept', [ApplicationController::class, 'accept'])->name('applications.accept');
     // Tolak Proyek
     Route::post('/applications/{application}/reject', [ApplicationController::class, 'reject'])->name('applications.reject');
+    // Update Periode Proyek
+    Route::patch('/applications/{application}/update-period', [ApplicationController::class, 'updatePeriod'])->name('applications.update-period');
 
     // Lihat Daftar Proyek yang Saya Buat / Inisiasi
     Route::get('/projects/my-projects', [ProjectController::class, 'myProjects'])->name('projects.my');
@@ -70,6 +70,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     // Delete Project
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    // Complete Project
+    Route::patch('/applications/{application}/complete', [ProjectController::class, 'complete'])->name('projects.complete');
+    // Activate Project
+    Route::patch('/projects/{project}/activate', [ProjectController::class, 'activate'])->name('projects.activate');
+
+
+    // Dalam group middleware auth
+    Route::prefix('project-contents')->group(function () {
+        Route::post('/{content}/upload-document', [ProjectContentController::class, 'uploadDocument'])->name('project-contents.upload-document');
+        Route::delete('/{content}/delete-document', [ProjectContentController::class, 'deleteDocument'])->name('project-contents.delete-document');
+    });
 
     // Project Contents Routes
     Route::middleware(['auth'])->group(function () {
@@ -86,8 +97,6 @@ Route::middleware(['auth'])->group(function () {
     // Admin Routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-
 
         // User management routes
         Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');

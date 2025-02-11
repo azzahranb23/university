@@ -49,10 +49,10 @@ placeholder-gray-400 shadow-sm hover:shadow-md">
                 </button>
                 <!-- Register Link -->
                 <div class="text-center text-sm text-gray-500">
-                    Belum punya akun?
+                    {{-- Belum punya akun?
                     <button @click="openLoginModal = false; openRoleModal = true" class="font-medium text-teal-600 hover:text-teal-500">
                         Sign Up
-                    </button>
+                    </button> --}}
                 </div>
             </form>
         </div>

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
-            $table->boolean('api_login')->default(false)->after('updated_at');
+            $table->boolean('api_login')->default(false);
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');

@@ -27,56 +27,78 @@
                 </h3>
             </div>
 
-            <!-- Project Details -->
-            <div class="text-left bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
-                <h4 class="text-lg font-medium text-gray-900">{{ $selectedProject->title }}</h4>
-                <p class="mt-2 text-gray-600">{{ $selectedProject->description }}</p>
-            </div>
+            @if ($selectedProject)
+                <!-- Project Details -->
+                <div class="text-left bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
+                    <h4 class="text-lg font-medium text-gray-900">{{ $selectedProject->title }}</h4>
+                    <p class="mt-2 text-gray-600">{{ $selectedProject->description }}</p>
+                </div>
+            @else
+                <div class="text-left bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
+                    <h4 class="text-lg font-medium text-gray-500">Tidak ada proyek yang dipilih</h4>
+                    <p class="mt-2 text-gray-400">Silakan pilih proyek untuk melihat detail</p>
+                </div>
+            @endif
 
-            <!-- Form -->
-            <form action="{{ route('projects.apply', $selectedProject->project_id) }}" method="POST" class="space-y-6">
-                @csrf
+            @if ($selectedProject)
+                <!-- Form -->
+                <form action="{{ route('projects.apply', $selectedProject->project_id) }}" method="POST" class="space-y-6">
+                    @csrf
 
-                <!-- Posisi -->
-                <div class="mb-6">
-                    <label for="position" class="block text-sm font-medium text-gray-800 mb-2">
-                        Posisi Proyek
-                    </label>
-                    <div class="relative">
-                        <select id="position" name="position"
-                            class="block w-full rounded-lg border border-gray-300 bg-white shadow-sm focus:border-teal-500 focus:ring-teal-500 text-gray-800 px-4 py-2 transition duration-200 ease-in-out">
-                            <option value="" class="text-gray-500">Pilih Posisi</option>
-                            @foreach (json_decode($selectedProject->positions) as $position)
-                                <option value="{{ $position }}">{{ $position }}</option>
-                            @endforeach
-                        </select>
+                    <!-- Posisi -->
+                    <div class="mb-6">
+                        <label for="position" class="block text-base font-medium text-gray-800 mb-2">
+                            Posisi Proyek
+                        </label>
+                        <div class="relative">
+                            <select id="position" name="position"
+                                class="block w-full rounded-lg border border-gray-300 bg-white shadow-sm focus:border-teal-500 focus:ring-teal-500 text-gray-800 px-4 py-2 transition duration-200 ease-in-out">
+                                <option value="" class="text-gray-500">Pilih Posisi</option>
+                                @foreach (json_decode($selectedProject->positions) as $position)
+                                    <option value="{{ $position }}">{{ $position }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Motivasi -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Motivasi Anda</label>
-                    <textarea name="motivation" rows="4"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-gray-700 px-4 py-2"
-                        placeholder="Jelaskan motivasi Anda untuk bergabung dengan proyek ini"></textarea>
-                </div>
+                    <!-- Motivasi -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-800 mb-2">Motivasi Anda</label>
+                        <textarea name="motivation" rows="4"
+                            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-700 focus:border-teal-500 focus:ring-teal-500 hover:border-gray-400 transition-colors resize-none"
+                            placeholder="Jelaskan motivasi Anda untuk bergabung dengan proyek ini"></textarea>
+                    </div>
 
-                <!-- Kelengkapan Dokumen -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Kelengkapan Dokumen</label>
-                    <input type="text" name="documents"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-gray-700 px-4 py-2"
-                        placeholder="Tautan dokumen jika tersedia">
-                </div>
+                    <!-- Kelengkapan Dokumen -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-800 mb-2">
+                            Link Dokumen Pendukung
+                            <span class="text-gray-500">(Portofolio/Sertifikat/CV)</span>
+                        </label>
 
-                <!-- Submit Button -->
-                <div class="mt-8">
-                    <button type="submit"
-                        class="w-full rounded-md bg-teal-500 px-4 py-3 text-white font-semibold hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 transition duration-200">
-                        Daftar Sekarang
-                    </button>
+                        <input type="text" name="documents"
+                            class="w-full rounded-lg border border-gray-300 px-4 py-3 mb-2 focus:border-teal-500 focus:ring-teal-500 hover:border-gray-400 transition-colors"
+                            placeholder="Masukkan link Google Drive/Dropbox yang berisi dokumen Anda">
+
+                        <p class="text-sm text-gray-500 italic">
+                            *Pastikan link dapat diakses secara publik
+                        </p>
+                    </div>
+
+
+                    <!-- Submit Button -->
+                    <div class="mt-8">
+                        <button type="submit"
+                            class="w-full rounded-md bg-teal-500 px-4 py-3 text-white font-semibold hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 transition duration-200">
+                            Daftar Sekarang
+                        </button>
+                    </div>
+                </form>
+            @else
+                <div class="text-center p-6">
+                    <p class="text-gray-500">Silakan pilih proyek terlebih dahulu untuk mendaftar</p>
                 </div>
-            </form>
+            @endif
         </div>
     </div>
 </div>

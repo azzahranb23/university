@@ -10,14 +10,58 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            ['category_name' => 'Teknologi', 'image' => 'images/categories/teknologi.jpg'],
-            ['category_name' => 'Kesehatan', 'image' => 'images/categories/kesehatan.jpg'],
-            ['category_name' => 'Teknik', 'image' => 'images/categories/teknik.jpg'],
-            ['category_name' => 'Ekonomi & Bisnis', 'image' => 'images/categories/ekonomi.jpg'],
-            ['category_name' => 'Pendidikan', 'image' => 'images/categories/pendidikan.jpg'],
-            ['category_name' => 'Lingkungan', 'image' => 'images/categories/lingkungan.jpg'],
-            ['category_name' => 'Hukum', 'image' => 'images/categories/hukum.png'],
-            ['category_name' => 'Sosial & Politik', 'image' => 'images/categories/sosial.png'],
+            [
+                'category_name' => 'Internet of Things (IoT)',
+                'image' => 'images/categories/iot.jpg'
+            ],
+            [
+                'category_name' => 'Artificial Intelligence (AI)',
+                'image' => 'images/categories/ai.jpeg'
+            ],
+            [
+                'category_name' => 'Machine Learning (ML)',
+                'image' => 'images/categories/ml.jpeg'
+            ],
+            [
+                'category_name' => 'Augmented & Virtual Reality (AR/VR)',
+                'image' => 'images/categories/ar-vr.jpg'
+            ],
+            [
+                'category_name' => 'Robotics',
+                'image' => 'images/categories/robotics.png'
+            ],
+            [
+                'category_name' => 'Data Science & Big Data',
+                'image' => 'images/categories/data-science.jpg'
+            ],
+            [
+                'category_name' => 'Cybersecurity',
+                'image' => 'images/categories/cybersecurity.jpg'
+            ],
+            [
+                'category_name' => 'Human-Computer Interaction (HCI)',
+                'image' => 'images/categories/hci.jpeg'
+            ],
+            [
+                'category_name' => 'Sistem Informasi',
+                'image' => 'images/categories/sistem-informasi.jpg'
+            ],
+            [
+                'category_name' => 'Web Development',
+                'image' => 'images/categories/web-dev.png'
+            ],
+            [
+                'category_name' => 'Mobile Development',
+                'image' => 'images/categories/mobile-dev.png'
+            ],
+            [
+                'category_name' => 'Jaringan Komputer',
+                'image' => 'images/categories/jaringan.jpeg'
+            ],
+            [
+                'category_name' => 'Database & Backend System',
+                'image' => 'images/categories/database.png'
+            ]
         ];
 
         foreach ($categories as $category) {

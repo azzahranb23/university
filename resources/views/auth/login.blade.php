@@ -59,13 +59,13 @@
                         </button>
                     </div>
 
-                    <div class="text-center text-sm text-gray-600">
+                    {{-- <div class="text-center text-sm text-gray-600">
                         Belum punya akun?
                         <button type="button" onclick="window.location.href='{{ route('register') }}?role=mahasiswa'"
                             class="font-medium text-teal-600 hover:text-teal-700 transition-colors">
                             Daftar
                         </button>
-                    </div>
+                    </div> --}}
                 </form>
             </div>
         </div>

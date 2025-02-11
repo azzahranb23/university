@@ -20,46 +20,6 @@
                             </div>
                         </div>
 
-                        <!-- Filter Status -->
-                        <div class="min-w-[200px]">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12l2 2 4-4M7.835 4.697A9.001 9.001 0 0121 12a9.001 9.001 0 01-7.835 7.303" />
-                                    </svg>
-                                </div>
-                                <select name="status"
-                                    class="w-full pl-10 pr-10 py-3 rounded-xl border-gray-300 focus:border-teal-500 focus:ring-teal-500 appearance-none bg-white transition duration-150 ease-in-out">
-                                    <option value="">Semua Status</option>
-                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Diterima</option>
-                                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Filter Posisi -->
-                        <div class="min-w-[200px]">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </div>
-                                <select name="position"
-                                    class="w-full pl-10 pr-10 py-3 rounded-xl border-gray-300 focus:border-teal-500 focus:ring-teal-500 appearance-none bg-white transition duration-150 ease-in-out">
-                                    <option value="">Semua Posisi</option>
-                                    @foreach ($positions as $position)
-                                        <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
-                                            {{ $position }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
                         <!-- Tombol-tombol -->
                         <div class="flex gap-2">
                             <button type="submit"
@@ -80,15 +40,6 @@
                                     Reset
                                 </a>
                             @endif
-
-                            <!-- Tombol Inisiasi Proyek -->
-                            <a href="{{ route('projects.public') }}"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors whitespace-nowrap">
-                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                Inisiasi Proyek
-                            </a>
                         </div>
                     </form>
                 </div>
@@ -105,25 +56,31 @@
 
                                 <!-- Status Badge -->
                                 <div class="absolute top-0 right-0">
-                                    @switch($application->status)
-                                        @case('pending')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                Request
-                                            </span>
-                                        @break
+                                    @if ($application->project->status == 'completed')
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            Selesai
+                                        </span>
+                                    @else
+                                        @switch($application->status)
+                                            @case('pending')
+                                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                                    Menunggu
+                                                </span>
+                                            @break
 
-                                        @case('accepted')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Accepted
-                                            </span>
-                                        @break
+                                            @case('accepted')
+                                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
+                                                    On Going
+                                                </span>
+                                            @break
 
-                                        @case('rejected')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                Rejected
-                                            </span>
-                                        @break
-                                    @endswitch
+                                            @case('rejected')
+                                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                                    Ditolak
+                                                </span>
+                                            @break
+                                        @endswitch
+                                    @endif
                                 </div>
 
                                 <div class="flex gap-4 items-start pt-2">
@@ -143,7 +100,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p class="mt-4">Belum ada pelamar proyek</p>
+                                    <p class="mt-4">Tidak ada proyek</p>
                                 </div>
                             @endforelse
                         </div>
@@ -155,41 +112,98 @@
                             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
                                 <h2 class="text-2xl font-bold mb-4">{{ $selectedApplication->project->title }}</h2>
 
-                                <div class="mb-3">
-                                    <img src="{{ $selectedApplication->project->photo ? asset($selectedApplication->project->photo) : asset('images/project-banner.jpg') }}"
-                                        class="w-full h-48 object-cover rounded-lg mb-4" alt="{{ $selectedApplication->project->title }}">
+                                <div class="space-y-6">
+                                    <!-- Project Image -->
+                                    <div class="relative h-48 rounded-xl overflow-hidden">
+                                        <img src="{{ $selectedApplication->project->photo ? asset($selectedApplication->project->photo) : asset('images/project-banner.jpg') }}"
+                                            class="w-full h-full object-cover" alt="{{ $selectedApplication->project->title }}">
+                                    </div>
 
-                                    <p class="text-gray-600">{{ $selectedApplication->project->description }}</p>
+                                    <!-- Project Description -->
+                                    <div class="text-gray-600 leading-relaxed">
+                                        {{ $selectedApplication->project->description }}
+                                    </div>
 
-                                    <div class="mt-4 flex items-center justify-between">
-                                        <p class="text-sm text-gray-500">Kuota Peserta:
-                                            <span class="font-semibold">5/10</span>
-                                        </p>
-                                        <!-- Status Badge Bar -->
-                                        <div class="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-                                            <div class="flex items-center space-x-2">
-                                                <span class="text-gray-700 font-medium">Status:</span>
-                                                @switch($selectedApplication->status)
-                                                    @case('pending')
-                                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <!-- Status Section -->
+                                    <div class="bg-gray-50 rounded-xl p-6">
+                                        @if ($application->project->status == 'completed')
+                                            <div class="flex items-center justify-between w-full">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-gray-700 font-medium">Status:</span>
+                                                    <span
+                                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        Selesai
+                                                    </span>
+                                                </div>
+
+                                                <button onclick="confirmActive()"
+                                                    class="inline-flex items-center px-4 py-2 border-2 border-teal-500 text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 font-medium">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                    Aktifkan Kembali
+                                                </button>
+                                            </div>
+                                        @else
+                                            @switch($selectedApplication->status)
+                                                @case('pending')
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="text-gray-700 font-medium">Status:</span>
+                                                        <span
+                                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
                                                             Menunggu
                                                         </span>
-                                                    @break
+                                                    </div>
+                                                @break
 
-                                                    @case('accepted')
-                                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
-                                                            On Going
-                                                        </span>
-                                                    @break
+                                                @case('accepted')
+                                                    <div class="flex items-center justify-between w-full">
+                                                        <div class="flex items-center gap-3">
+                                                            <span class="text-gray-700 font-medium">Status:</span>
+                                                            <span
+                                                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
+                                                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                                </svg>
+                                                                On Going
+                                                            </span>
+                                                        </div>
 
-                                                    @case('rejected')
-                                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                                        <button onclick="confirmComplete()"
+                                                            class="inline-flex items-center px-4 py-2 border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50 rounded-lg transition-all duration-200 font-medium">
+                                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                            Tandai Selesai
+                                                        </button>
+                                                    </div>
+                                                @break
+
+                                                @case('rejected')
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="text-gray-700 font-medium">Status:</span>
+                                                        <span
+                                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
                                                             Ditolak
                                                         </span>
-                                                    @break
-                                                @endswitch
-                                            </div>
-                                        </div>
+                                                    </div>
+                                                @break
+                                            @endswitch
+                                        @endif
                                     </div>
                                 </div>
 
@@ -209,7 +223,7 @@
                                                     class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" alt="Profile">
                                                 <span
                                                     class="absolute -bottom-2 right-0 px-3 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">
-                                                    {{ $selectedApplication->user->role === 'student' ? 'Mahasiswa' : 'Staff' }}
+                                                    {{ $selectedApplication->user->role === 'student' ? 'Mahasiswa' : 'Dosen' }}
                                                 </span>
                                             </div>
                                             <div>
@@ -257,6 +271,29 @@
                                             <p class="text-gray-700 leading-relaxed">{{ $selectedApplication->motivation }}</p>
                                         </div>
 
+                                        {{-- Document Link --}}
+                                        <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                                            <div class="mb-4">
+                                                <label class="text-lg font-semibold text-gray-800">
+                                                    Dokumen Pendukung
+                                                </label>
+                                            </div>
+
+                                            <div class="flex items-center gap-3">
+                                                <input type="text" value="{{ $selectedApplication->documents }}"
+                                                    class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-600" readonly>
+
+                                                <a href="{{ $selectedApplication->documents }}" target="_blank"
+                                                    class="inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                    </svg>
+                                                    Buka Link
+                                                </a>
+                                            </div>
+                                        </div>
+
                                         {{-- Action Buttons --}}
                                         @if ($selectedApplication->status === 'pending')
                                             <div class="flex gap-4">
@@ -275,15 +312,26 @@
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <!-- Periode Kegiatan -->
                                                 <div class="bg-white rounded-xl border border-gray-200 p-4">
-                                                    <div class="flex items-center gap-3 mb-3">
-                                                        <div class="p-2 bg-gray-100 rounded-lg">
-                                                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                            </svg>
+                                                    <div class="flex justify-between items-center mb-3">
+                                                        <div class="flex items-center gap-3">
+                                                            <div class="p-2 bg-gray-100 rounded-lg">
+                                                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            <h3 class="font-semibold text-gray-800">Periode Kegiatan</h3>
                                                         </div>
-                                                        <h3 class="font-semibold text-gray-800">Periode Kegiatan</h3>
+                                                        @if ($application->project->status == 'active')
+                                                            <button onclick="showEditPeriodModal('{{ $selectedApplication->application_id }}')"
+                                                                class="p-2 text-gray-500 hover:text-teal-600 transition-colors">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                                </svg>
+                                                            </button>
+                                                        @endif
                                                     </div>
                                                     <div class="space-y-2">
                                                         <div class="flex justify-between items-center text-sm">
@@ -352,16 +400,17 @@
                                                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:col-span-2">
                                                     <!-- Header -->
                                                     <div class="flex justify-between items-center mb-6">
-                                                        <h3 class="text-xl font-bold text-gray-800">Konten Proyek</h3>
-
-                                                        <button onclick="showAddContent('{{ $selectedApplication->application_id }}')"
-                                                            class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                                                            <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M12 4v16m8-8H4" />
-                                                            </svg>
-                                                            Tambah Konten Proyek
-                                                        </button>
+                                                        <h3 class="text-xl font-bold text-gray-800">Penugasan</h3>
+                                                        @if ($application->project->status == 'active')
+                                                            <button onclick="showAddContent('{{ $selectedApplication->application_id }}')"
+                                                                class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
+                                                                <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                        d="M12 4v16m8-8H4" />
+                                                                </svg>
+                                                                Tambah Penugasan
+                                                            </button>
+                                                        @endif
                                                     </div>
 
                                                     <!-- List Konten -->
@@ -379,19 +428,22 @@
                                                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                                         </svg>
                                                                     </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button onclick="deleteContent('{{ $content->content_id }}')"
-                                                                        class="p-1.5 text-gray-500 hover:text-red-600 transition-colors">
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                                        </svg>
-                                                                    </button>
+                                                                    @if ($application->project->status == 'active')
+                                                                        <!-- Delete Button -->
+                                                                        <button onclick="deleteContent('{{ $content->content_id }}')"
+                                                                            class="p-1.5 text-gray-500 hover:text-red-600 transition-colors">
+                                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                                viewBox="0 0 24 24">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         @empty
                                                             <div class="text-center py-6 text-gray-500">
-                                                                <p>Belum ada konten proyek</p>
+                                                                <p>Belum ada penugasan</p>
                                                             </div>
                                                         @endforelse
                                                     </div>
@@ -414,6 +466,7 @@
         @include('projects.Modal.edit-content')
         @include('projects.Modal.accept-application')
         @include('projects.Modal.add-content')
+        @include('projects.Modal.edit-period')
 
         <script>
             // Fungsi untuk menangani penolakan aplikasi
@@ -471,19 +524,17 @@
 
             // Fungsi untuk menghapus konten
             async function deleteContent(contentId) {
-                // Konfirmasi penghapusan dengan SweetAlert
                 const confirmResult = await Swal.fire({
-                    title: 'Hapus Konten?',
-                    text: "Konten yang dihapus tidak dapat dikembalikan!",
+                    title: 'Hapus Penugasan?',
+                    text: "Penugasan yang dihapus tidak dapat dikembalikan!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444', // Warna merah untuk delete
+                    confirmButtonColor: '#ef4444',
                     cancelButtonColor: '#6b7280',
                     confirmButtonText: 'Ya, hapus!',
                     cancelButtonText: 'Batal'
                 });
 
-                // Jika user mengkonfirmasi penghapusan
                 if (confirmResult.isConfirmed) {
                     try {
                         const response = await fetch(`/project-contents/${contentId}`, {
@@ -507,16 +558,161 @@
                                 window.location.reload();
                             });
                         } else {
-                            throw new Error(result.message || 'Terjadi kesalahan saat menghapus konten');
+                            throw new Error(result.message || 'Terjadi kesalahan saat menghapus penugasan');
                         }
                     } catch (error) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: error.message || 'Terjadi kesalahan saat menghapus konten'
+                            text: error.message || 'Terjadi kesalahan saat menghapus penugasan'
                         });
                     }
                 }
             }
+
+            function confirmComplete() {
+                Swal.fire({
+                    title: 'Selesaikan Proyek?',
+                    text: "Apakah Anda yakin ingin menandai proyek ini sebagai selesai?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10B981',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: 'Ya, Selesaikan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form untuk submit
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('projects.complete', $selectedApplication->application_id) }}';
+
+                        // Tambahkan CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = document.querySelector('meta[name="csrf-token"]').content;
+
+                        // Tambahkan method spoofing karena menggunakan PATCH
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'PATCH';
+
+                        // Append semua ke form dan submit
+                        form.appendChild(csrfToken);
+                        form.appendChild(methodField);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+
+            function confirmActive() {
+                Swal.fire({
+                    title: 'Aktifkan Proyek?',
+                    text: "Apakah Anda yakin ingin mengaktifkan kembali proyek ini?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10B981',
+                    cancelButtonColor: '#6B7280',
+                    confirmButtonText: 'Ya, Aktifkan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Buat form untuk submit
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('projects.activate', $selectedApplication->application_id) }}';
+
+                        // Tambahkan CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = document.querySelector('meta[name="csrf-token"]').content;
+
+                        // Tambahkan method spoofing karena menggunakan PATCH
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'PATCH';
+
+                        // Append semua ke form dan submit
+                        form.appendChild(csrfToken);
+                        form.appendChild(methodField);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+
+            // Fungsi untuk menampilkan modal edit periode
+            function showEditPeriodModal(applicationId) {
+                // Set action URL form
+                const form = document.getElementById('editPeriodForm');
+                form.action = `/applications/${applicationId}/update-period`;
+
+                // Debug untuk melihat nilai yang akan diset
+                console.log('Start Date:', @json($selectedApplication->start_date));
+                console.log('Finish Date:', @json($selectedApplication->finish_date));
+
+                // Set nilai awal form
+                document.getElementById('edit_start_date').value = '{{ \Carbon\Carbon::parse($selectedApplication->start_date)->format('Y-m-d') }}';
+                document.getElementById('edit_finish_date').value = '{{ \Carbon\Carbon::parse($selectedApplication->finish_date)->format('Y-m-d') }}';
+                document.getElementById('edit_link_room_discus').value = '{{ $selectedApplication->link_room_discus }}';
+
+                // Tampilkan modal
+                document.getElementById('editPeriodModal').classList.remove('hidden');
+            }
+
+            // Fungsi untuk menutup modal
+            function closeEditPeriodModal() {
+                document.getElementById('editPeriodModal').classList.add('hidden');
+            }
+
+            // Event listener untuk form edit
+            document.addEventListener('DOMContentLoaded', function() {
+                const editPeriodForm = document.getElementById('editPeriodForm');
+                if (editPeriodForm) {
+                    editPeriodForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+
+                        try {
+                            const response = await fetch(this.action, {
+                                method: 'POST',
+                                body: new FormData(this),
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                }
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                // Tutup modal
+                                closeEditPeriodModal();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: result.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                throw new Error(result.message || 'Terjadi kesalahan saat memperbarui data');
+                            }
+                        } catch (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: error.message || 'Terjadi kesalahan saat memperbarui data'
+                            });
+                        }
+                    });
+                }
+            });
         </script>
     </x-app-layout>

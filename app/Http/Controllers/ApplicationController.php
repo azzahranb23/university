@@ -95,9 +95,12 @@ class ApplicationController extends Controller
     public function onGoing()
     {
         $applications = Application::with(['project', 'user'])
-            ->where('user_id', Auth::user()->user_id)
-            ->where('status', 'accepted')
-            ->where('progress', '<', 100)
+            ->select('applications.*')
+            ->join('projects', 'applications.project_id', '=', 'projects.project_id')
+            ->where('applications.user_id', Auth::user()->user_id)
+            ->where('applications.status', 'accepted')
+            ->where('projects.status', '<>', 'completed')
+            // ->where('progress', '<', 100)
             ->latest()
             ->get();
 
@@ -110,9 +113,12 @@ class ApplicationController extends Controller
     public function finished()
     {
         $applications = Application::with(['project', 'user'])
-            ->where('user_id', Auth::user()->user_id)
-            ->where('status', 'accepted')
-            ->where('progress', 100)
+            ->select('applications.*')
+            ->join('projects', 'applications.project_id', '=', 'projects.project_id')
+            ->where('applications.user_id', Auth::user()->user_id)
+            ->where('applications.status', 'accepted')
+            ->where('projects.status', 'completed')
+            // ->where('progress', 100)
             ->latest()
             ->get();
 
@@ -165,12 +171,22 @@ class ApplicationController extends Controller
         try {
             // Cari aplikasi berdasarkan ID
             $application = Application::findOrFail($id);
+            $project = $application->project;
 
             // Validasi akses
-            if ($application->project->user_id !== Auth::user()->user_id) {
+            if ($project->user_id !== Auth::user()->user_id) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Anda tidak memiliki akses untuk menerima aplikasi ini.'
+                ]);
+            }
+
+            // Cek kuota sebelum menerima aplikasi
+            $acceptedApplications = $project->applications()->where('status', 'accepted')->count();
+            if ($acceptedApplications >= $project->quota) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak dapat menerima aplikasi karena kuota sudah penuh.'
                 ]);
             }
 
@@ -189,6 +205,9 @@ class ApplicationController extends Controller
                 'link_room_discus' => $validated['link_room_discus'],
                 'progress' => 0
             ]);
+
+            // Update jumlah applicants
+            $project->increment('applicants');
 
             return response()->json([
                 'success' => true,
@@ -237,5 +256,21 @@ class ApplicationController extends Controller
 
 
         return view('projects.my-project-detail', compact('application', 'projectContents'));
+    }
+
+    public function updatePeriod(Request $request, Application $application)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'finish_date' => 'required|date|after:start_date',
+            'link_room_discus' => 'required|url'
+        ]);
+
+        $application->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Informasi proyek berhasil diperbarui'
+        ]);
     }
 }

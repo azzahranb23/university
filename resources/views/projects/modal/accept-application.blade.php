@@ -47,7 +47,7 @@
                         <!-- Input Field -->
                         <input type="url" id="link_room_discus" name="link_room_discus" required
                             class="block w-full pl-10 pr-12 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-200 focus:border-teal-500 hover:border-teal-300 transition-all duration-150 placeholder-gray-400 bg-white"
-                            placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+                            placeholder="https://chat.whatsapp.com/xxx atau https://t.me/xxx" />
 
                         <!-- Paste Button -->
                         <button type="button" onclick="pasteFromClipboard()" class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -61,8 +61,8 @@
                     </div>
 
                     <!-- Helper Text -->
-                    <p class="text-sm text-gray-500 mt-1">
-                        Contoh: Google Meet, Zoom, atau platform meeting lainnya
+                    <p class="text-sm text-gray-500">
+                        Masukkan tautan ruang diskusi seperti grup WhatsApp, Line, atau Telegram
                     </p>
                 </div>
 

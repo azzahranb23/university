@@ -89,6 +89,28 @@
         </div>
     </div>
 
+    <!-- Filter Section -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <form action="{{ route('admin.projects') }}" method="GET" class="flex items-center gap-4">
+            <div class="flex-1">
+                <select name="status"
+                    class="block w-full bg-gray-700 border-gray-600 rounded-lg focus:ring-teal-500 focus:border-teal-500 text-white px-4 py-2">
+                    <option value="">Semua Status</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
+                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
+                </select>
+            </div>
+            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition-colors">
+                Filter
+            </button>
+            <a href="{{ route('admin.projects') }}" class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
+                Reset
+            </a>
+        </form>
+    </div>
+
     <!-- Projects Table -->
     <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         <div class="p-6">

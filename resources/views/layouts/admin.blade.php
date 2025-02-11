@@ -115,14 +115,14 @@
                         Applications
                     </a>
 
-                    <!-- Project Konten -->
+                    <!-- Penugasan -->
                     <a href="{{ route('admin.project-contents') }}"
                         class="group flex items-center gap-x-3 rounded-lg px-4 py-2 text-sm font-medium {{ request()->routeIs('admin.project-contents') ? 'bg-gray-700/50 text-emerald-400' : 'text-gray-300 hover:bg-gray-700/50 hover:text-emerald-400' }} transition-all duration-200">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
                         </svg>
-                        Project Konten
+                        Penugasan
                     </a>
 
                     <!-- Divider -->

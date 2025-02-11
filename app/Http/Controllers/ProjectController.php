@@ -10,6 +10,7 @@ use App\Models\ProjectContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -39,14 +40,10 @@ class ProjectController extends Controller
         $selectedProject = null;
         if ($request->filled('project')) {
             $selectedProject = Project::with(['category', 'user'])
-                ->findOrFail($request->project);
-        } else {
-            // Tampilkan proyek pertama sebagai default
-            $selectedProject = $projects->first();
+                ->find($request->project);
         }
 
         $categories = Category::all();
-
         return view('projects.public', compact('projects', 'selectedProject', 'categories'));
     }
 
@@ -71,7 +68,9 @@ class ProjectController extends Controller
         }
 
         // Ambil proyek yang dibuat oleh user yang login
-        $myProject = Project::where('user_id', Auth::user()->user_id)->first();
+        $myProject = Project::where('projects.user_id', Auth::user()->user_id)
+            ->join('applications', 'projects.project_id', '=', 'applications.project_id')
+            ->first();
 
         if ($myProject) {
             // Query untuk aplikasi yang masuk ke proyek user
@@ -92,11 +91,6 @@ class ProjectController extends Controller
                 });
             }
 
-            // Filter berdasarkan status
-            if ($request->filled('status')) {
-                $query->where('status', $request->status);
-            }
-
             // Filter berdasarkan posisi
             if ($request->filled('position')) {
                 $query->where('position', $request->position);
@@ -115,9 +109,13 @@ class ProjectController extends Controller
                 $selectedApplication = $applications->first();
             }
 
-            $projectContents = ProjectContent::where('application_id', $selectedApplication->application_id)
-                ->latest()
-                ->get();
+            if ($selectedApplication) {
+                $projectContents = ProjectContent::where('application_id', $selectedApplication->application_id)
+                    ->latest()
+                    ->get();
+            } else {
+                $projectContents = collect();
+            }
         } else {
             $applications = collect();
             $selectedApplication = null;
@@ -137,6 +135,20 @@ class ProjectController extends Controller
 
     public function create()
     {
+        $testjumlahprogress = Project::select('projects.*', 'applications.progress')
+            ->leftJoin('applications', 'projects.project_id', '=', 'applications.project_id')
+            ->where('projects.user_id', Auth::user()->user_id)
+            ->get();
+
+        $allComplete = $testjumlahprogress->every(function ($application) {
+            return $application->progress == 100;
+        });
+
+        if (!$allComplete) {
+            return redirect()->route('projects.public')
+                ->with('error', 'Anda tidak dapat membuat proyek baru karena masih memiliki proyek yang sedang berjalan. Harap selesaikan proyek yang sedang aktif terlebih dahulu.');
+        }
+
         $categories = Category::all();
         return view('projects.create', compact('categories'));
     }
@@ -146,10 +158,12 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'photo' => 'nullable|image|max:2048', // max 2MB
+            'photo' => 'nullable|image|max:2048',
             'positions' => 'required|array',
             'duration' => 'required|string',
             'benefits' => 'required|string',
+            'quota' => 'required|integer|min:1',
+            'applicants' => '0',
             'category_id' => 'required|exists:categories,category_id'
         ]);
 
@@ -158,7 +172,8 @@ class ProjectController extends Controller
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $fileName = 'healthcare.jpg';  // Langsung set nama file
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . Str::random(10) . '.' . $extension;
             $file->move(public_path('images/projects'), $fileName);
             $validated['photo'] = 'images/projects/' . $fileName;
         }
@@ -245,6 +260,51 @@ class ProjectController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat menghapus proyek.'
             ]);
+        }
+    }
+
+    public function complete($applicationId)
+    {
+        try {
+            $application = Application::findOrFail($applicationId);
+
+            // Update status aplikasi
+            $application->update([
+                'progress' => 100,
+                'finish_date' => now()
+            ]);
+
+            // Update status proyek
+            $project = Project::findOrFail($application->project_id);
+            $project->update([
+                'status' => 'completed'
+            ]);
+
+            return redirect()->back()->with('success', 'Proyek berhasil diselesaikan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyelesaikan proyek.');
+        }
+    }
+
+    public function activate($applicationId)
+    {
+        try {
+            $application = Application::findOrFail($applicationId);
+
+            // Update status aplikasi
+            $application->update([
+                'finish_date' => null
+            ]);
+
+            // Update status proyek
+            $project = Project::findOrFail($application->project_id);
+            $project->update([
+                'status' => 'active'
+            ]);
+
+            return redirect()->back()->with('success', 'Proyek berhasil diaktifkan kembali!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengaktifkan proyek.');
         }
     }
 }

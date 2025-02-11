@@ -80,4 +80,25 @@ class ProfileController extends Controller
             return redirect()->back()->with('error', 'Failed to update password. Please try again.');
         }
     }
+
+    public function deletePhoto()
+    {
+        $user = Auth::user();
+
+        try {
+            if ($user->photo) {
+                // Delete the existing photo from storage
+                Storage::disk('public')->delete($user->photo);
+
+                // Update user's photo field to null
+                $user->update(['photo' => null]);
+
+                return redirect()->route('profile')->with('success', 'Profile photo removed successfully');
+            }
+
+            return redirect()->route('profile')->with('info', 'No profile photo to remove');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to remove profile photo. Please try again.');
+        }
+    }
 }

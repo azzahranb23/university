@@ -296,7 +296,7 @@ class AdminDashboardController extends Controller
         }
     }
 
-    public function projects()
+    public function projects(Request $request)
     {
         // Statistik untuk summary cards
         $stats = [
@@ -308,8 +308,8 @@ class AdminDashboardController extends Controller
             'acceptedApplications' => Application::where('status', 'accepted')->count(),
         ];
 
-        // Data projects dengan relasi
-        $projects = Project::with(['user', 'category'])
+        // Query dasar
+        $query = Project::with(['user', 'category'])
             ->withCount([
                 'applications',
                 'applications as pending_applications_count' => function ($query) {
@@ -318,10 +318,14 @@ class AdminDashboardController extends Controller
                 'applications as accepted_applications_count' => function ($query) {
                     $query->where('status', 'accepted');
                 }
-            ])
-            ->latest()
-            ->get();
+            ]);
 
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $projects = $query->latest()->get();
         $categories = Category::all();
         $users = User::all();
 

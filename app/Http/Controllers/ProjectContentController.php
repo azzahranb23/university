@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\ProjectContent;
 use App\Models\Application;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+
 
 class ProjectContentController extends Controller
 {
@@ -216,6 +221,128 @@ class ProjectContentController extends Controller
                 'success' => false,
                 'message' => 'Gagal memperbarui link',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadDocument(Request $request, $contentId)
+    {
+        try {
+            // Validasi - menambahkan rar dan zip
+            $request->validate([
+                'document' => 'required|file|mimes:pdf,doc,docx,txt,rar,zip|max:5120'
+            ]);
+
+            $content = ProjectContent::findOrFail($contentId);
+
+            if ($request->hasFile('document')) {
+                $file = $request->file('document');
+
+                // Nama file unik
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Path tujuan
+                $destinationPath = public_path('documents');
+
+                // Buat directory jika belum ada
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+
+                // Pindahkan file
+                $file->move($destinationPath, $fileName);
+
+                // Update database
+                $content->update([
+                    'document_path' => 'documents/' . $fileName
+                ]);
+
+                // Cari aplikasi menggunakan application_id dari content
+                if ($content->application_id) {
+                    $application = Application::find($content->application_id);
+
+                    if ($application) {
+                        // Hitung total konten untuk aplikasi ini
+                        $totalContents = $application->projectContents()->count();
+                        $completedContents = $application->projectContents()
+                            ->whereNotNull('document_path')
+                            ->where('document_path', '!=', '')
+                            ->count();
+
+                        $progressPercentage = ($totalContents > 0)
+                            ? round(($completedContents / $totalContents) * 100)
+                            : 0;
+
+                        $application->update([
+                            'progress' => $progressPercentage
+                        ]);
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Dokumen berhasil diupload'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada file yang diupload'
+            ], 400);
+        } catch (\Exception $e) {
+            Log::error('Upload error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteDocument($contentId)
+    {
+        try {
+            $content = ProjectContent::findOrFail($contentId);
+
+            if ($content->document_path) {
+                Storage::disk('public')->delete($content->document_path);
+
+                $content->update([
+                    'document_path' => null
+                ]);
+
+                // Cari aplikasi menggunakan application_id dari content
+                if ($content->application_id) {
+                    $application = Application::find($content->application_id);
+
+                    if ($application) {
+                        // Hitung total konten untuk aplikasi ini
+                        $totalContents = $application->projectContents()->count();
+                        $completedContents = $application->projectContents()
+                            ->whereNotNull('document_path')
+                            ->where('document_path', '!=', '')
+                            ->count();
+
+                        $progressPercentage = ($totalContents > 0)
+                            ? round(($completedContents / $totalContents) * 100)
+                            : 0;
+
+                        $application->update([
+                            'progress' => $progressPercentage
+                        ]);
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Dokumen berhasil dihapus'
+                ]);
+            }
+
+            throw new \Exception('Dokumen tidak ditemukan');
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
             ], 500);
         }
     }

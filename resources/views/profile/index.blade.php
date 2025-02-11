@@ -7,8 +7,7 @@
                     <div class="flex flex-col items-center space-y-4">
                         <div class="relative">
                             <img src="{{ auth()->user()->photo ? asset('storage/' . auth()->user()->photo) : asset('images/default-avatar.jpg') }}"
-                                class="w-40 h-40 rounded-full object-cover border-4 border-teal-100 shadow-lg"
-                                alt="Profile Photo">
+                                class="w-40 h-40 rounded-full object-cover border-4 border-teal-100 shadow-lg" alt="Profile Photo">
                             <div class="absolute -bottom-2 left-0 right-0 flex justify-center">
                                 <span class="px-4 py-1 bg-teal-500 text-white text-sm rounded-full shadow-md">
                                     {{ auth()->user()->role === 'student' ? 'Mahasiswa' : 'Dosen' }}
@@ -29,8 +28,7 @@
                                     <p class="text-base font-medium">{{ auth()->user()->major->major_name ?? '-' }}</p>
                                 @else
                                     <p class="text-sm text-gray-500">Departemen</p>
-                                    <p class="text-base font-medium">
-                                        {{ auth()->user()->department->department_name ?? '-' }}</p>
+                                    <p class="text-base font-medium">{{ auth()->user()->department->department_name ?? '-' }}</p>
                                 @endif
                             </div>
 

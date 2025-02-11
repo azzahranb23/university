@@ -12,39 +12,52 @@
                 class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                 @csrf
 
-                <!-- Informasi Dasar -->
                 <div class="border-b border-gray-200 bg-gray-100 px-8 py-6">
                     <h2 class="text-xl font-semibold text-gray-800">Informasi Dasar</h2>
                 </div>
-                <div class="p-8 space-y-6">
-                    <div>
+                <div class="p-8 space-y-8">
+                    <div class="space-y-2">
                         <label for="title" class="block text-sm font-medium text-gray-700">Judul Proyek</label>
                         <input type="text" name="title" id="title" required
-                            class="mt-2 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3">
                     </div>
 
-                    <div>
+                    <div class="space-y-2">
                         <label for="category_id" class="block text-sm font-medium text-gray-700">Kategori</label>
                         <select name="category_id" id="category_id" required
-                            class="mt-2 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->category_id }}">{{ $category->category_name }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div>
+                    <div class="space-y-2">
                         <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi Proyek</label>
                         <textarea name="description" id="description" rows="4" required
-                            class="mt-2 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3"
                             placeholder="Deskripsikan detail proyek..."></textarea>
                     </div>
 
-                    <div>
-                        <label for="duration" class="block text-sm font-medium text-gray-700">Durasi Proyek</label>
-                        <input type="text" name="duration" id="duration" required
-                            class="mt-2 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500"
-                            placeholder="Contoh: 3 Bulan">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="duration" class="block text-sm font-medium text-gray-700">Durasi Proyek</label>
+                            <input type="text" name="duration" id="duration" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3"
+                                placeholder="Contoh: 3 Bulan">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="quota" class="block text-sm font-medium text-gray-700">Kuota Peserta</label>
+                            <div class="relative mt-1">
+                                <input type="number" name="quota" id="quota" required min="1"
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3 pr-16"
+                                    placeholder="Contoh: 5">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                    <span class="text-gray-500 text-sm">orang</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -56,10 +69,10 @@
                     <div id="positions-container" class="space-y-4">
                         <div class="flex items-center gap-4">
                             <input type="text" name="positions[]" required
-                                class="flex-1 rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500"
+                                class="flex-1 rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3"
                                 placeholder="Contoh: Frontend Developer">
                             <button type="button" onclick="addPosition()"
-                                class="inline-flex items-center rounded-md bg-teal-100 px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-200">
+                                class="inline-flex items-center rounded-md bg-teal-100 px-6 py-3 text-sm font-medium text-teal-700 hover:bg-teal-200">
                                 Tambah Posisi
                             </button>
                         </div>
@@ -71,8 +84,9 @@
                     <h2 class="text-xl font-semibold text-gray-800">Benefit Proyek</h2>
                 </div>
                 <div class="p-8">
-                    <textarea name="benefits" rows="4" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500"
-                        placeholder="Contoh:\n- Sertifikat\n- Uang Saku\n- Pengalaman Proyek"></textarea>
+                    <textarea name="benefits" rows="4" required
+                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3"
+                        placeholder="Contoh:&#10;- Sertifikat&#10;- Uang Saku&#10;- Pengalaman Proyek"></textarea>
                 </div>
 
                 <!-- Upload Foto -->
@@ -82,7 +96,6 @@
                 <div class="p-8">
                     <div class="flex flex-col items-center rounded-lg border border-dashed border-gray-400 p-10 bg-gray-50">
                         <div id="image-preview" class="mb-4">
-                            <!-- Preview image akan muncul di sini -->
                             <img id="preview-img" src="#" alt="Preview Foto" class="hidden w-40 h-40 object-cover rounded-lg shadow-md">
                         </div>
                         <div class="text-center">
@@ -103,7 +116,6 @@
                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- Submit -->
@@ -126,14 +138,14 @@
             const newPosition = document.createElement('div');
             newPosition.className = 'flex items-center gap-4';
             newPosition.innerHTML = `
-            <input type="text" name="positions[]" required
-                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
-                placeholder="Contoh: Frontend Developer">
-            <button type="button" onclick="removePosition(this)"
-                class="inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200">
-                Hapus
-            </button>
-        `;
+        <input type="text" name="positions[]" required
+            class="flex-1 rounded-lg border-gray-300 shadow-sm focus:ring-teal-500 focus:border-teal-500 px-4 py-3"
+            placeholder="Contoh: Frontend Developer">
+        <button type="button" onclick="removePosition(this)"
+            class="inline-flex items-center rounded-md bg-red-100 px-6 py-3 text-sm font-medium text-red-700 hover:bg-red-200">
+            Hapus
+        </button>
+    `;
             container.appendChild(newPosition);
         }
 

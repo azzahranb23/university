@@ -17,6 +17,7 @@ class ProjectContent extends Model
         'start_date',
         'due_date',
         'link_task',
+        'document_path',
         'progress',
         'project_id',
         'application_id',

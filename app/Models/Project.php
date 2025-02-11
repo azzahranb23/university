@@ -15,8 +15,11 @@ class Project extends Model
         'positions',
         'duration',
         'benefits',
+        'quota',
+        'applicants',
         'category_id',
-        'user_id'
+        'user_id',
+        'status',
     ];
 
     protected $casts = [
